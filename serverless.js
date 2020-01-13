@@ -39,6 +39,8 @@ class Website extends Component {
     }
     inputs.region = inputs.region || 'us-east-1'
     inputs.bucketName = this.state.bucketName || inputs.bucketName || this.context.resourceId()
+    inputs.indexDocument = inputs.indexDocument || 'index.html';
+    inputs.errorDocument = inputs.errorDocument || 'index.html';
 
     this.context.status(`Preparing AWS S3 Bucket`)
     this.context.debug(`Preparing website AWS S3 bucket ${inputs.bucketName}.`)
@@ -56,7 +58,8 @@ class Website extends Component {
     const s3 = new aws.S3({ region: inputs.region, credentials: this.context.credentials.aws })
 
     this.context.debug(`Configuring bucket ${inputs.bucketName} for website hosting.`)
-    await configureBucketForHosting(s3, inputs.bucketName)
+
+    await configureBucketForHosting(s3, inputs.bucketName, inputs.indexDocument, inputs.errorDocument)
 
     // Build environment variables
     inputs.env = inputs.env || {}
@@ -64,7 +67,7 @@ class Website extends Component {
       this.context.status(`Bundling environment variables`)
       this.context.debug(`Bundling website environment variables.`)
       let script = 'window.env = {};\n'
- 
+
       for (const e in inputs.env) {
         // eslint-disable-line
         script += `window.env.${e} = ${JSON.stringify(inputs.env[e])};\n` // eslint-disable-line
@@ -79,7 +82,7 @@ class Website extends Component {
       this.context.status('Building assets')
       this.context.debug(`Running ${inputs.code.hook} in ${inputs.code.root}.`)
 
-      const options = { 
+      const options = {
         cwd: inputs.code.root,
         // Merge input & process env variables to be available for hooks execution
         env: Object.assign(process.env, inputs.env),
