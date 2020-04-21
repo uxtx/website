@@ -1,6 +1,6 @@
 const { utils } = require('@serverless/core')
 
-const configureBucketForHosting = async (s3, bucketName) => {
+const configureBucketForHosting = async (s3, bucketName, indexDocument, errorDocument) => {
   const s3BucketPolicy = {
     Version: '2012-10-17',
     Statement: [
@@ -19,10 +19,10 @@ const configureBucketForHosting = async (s3, bucketName) => {
     Bucket: bucketName,
     WebsiteConfiguration: {
       ErrorDocument: {
-        Key: 'index.html'
+        Key: errorDocument
       },
       IndexDocument: {
-        Suffix: 'index.html'
+        Suffix: indexDocument
       }
     }
   }
