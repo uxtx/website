@@ -60,6 +60,8 @@ myWebsite:
       root: ./ # The root folder of your website project.  Defaults to current working directory
       src: ./src # The folder to be uploaded containing your built artifact
       hook: npm run build # A hook to build/test/do anything to your code before uploading
+      indexDocmeunt: if you need to override index document. Default is index.html
+      errorDocmeunt: if you need to override error document. Default is index.html
     region: us-east-1 # The AWS region to deploy your website into
     bucketName: myBucket # (Optional) The Bucket name where `src` files/folder will be upload. 
                          # If not provided, it will create random bucket name and upload `src` files
